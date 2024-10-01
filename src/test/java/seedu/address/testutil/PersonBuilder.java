@@ -99,9 +99,12 @@ public class PersonBuilder {
         return this;
     }
 
-
+    /**
+     * Builds and returns a {@code Person} object based on the current state of the PersonBuilder.
+     *
+     * @return the built Person object.
+     */
     public Person build() {
         return new Person(name, phone, email, address, remark, tags);
     }
-
 }

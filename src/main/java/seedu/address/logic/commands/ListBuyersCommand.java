@@ -18,6 +18,7 @@ public class ListBuyersCommand extends ListCommand {
      * Logs the creation of the command.
      */
     public ListBuyersCommand() {
+        assert false;
         logger.info("ListBuyersCommand object created");
     }
 
@@ -30,6 +31,7 @@ public class ListBuyersCommand extends ListCommand {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
+
 
         logger.info("Executing ListBuyersCommand to list all buyers");
 

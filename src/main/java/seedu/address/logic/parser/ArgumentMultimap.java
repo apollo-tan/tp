@@ -1,14 +1,14 @@
 package seedu.address.logic.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -80,20 +80,19 @@ public class ArgumentMultimap {
     }
 
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
+     * Returns true if none of the prefixes contains empty {@code Optional} values in this {@code ArgumentMultimap}.
      */
-    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    public boolean arePrefixesPresent(Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> getValue(prefix).isPresent());
     }
 
     /**
-     * Returns true if only the specified prefixes are present in the given {@code ArgumentMultimap}.
+     * Returns true if only the specified prefixes are present in this {@code ArgumentMultimap}.
      * Ensures that no other prefixes are present.
      */
-    public static boolean areOnlyPrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+    public boolean areOnlyPrefixesPresent(Prefix... prefixes) {
         // Get all existing prefixes in the argument multimap
-        List<Prefix> existingPrefixes = new ArrayList<>(argumentMultimap.argMultimap.keySet());
+        List<Prefix> existingPrefixes = new ArrayList<>(argMultimap.keySet());
 
         // Create a set of allowed prefixes for quick lookup
         Set<Prefix> allowedPrefixes = new HashSet<>(Arrays.asList(prefixes));
@@ -106,6 +105,6 @@ public class ArgumentMultimap {
         }
 
         // Check if all allowed prefixes are present
-        return arePrefixesPresent(argumentMultimap, prefixes);
+        return arePrefixesPresent(prefixes);
     }
 }

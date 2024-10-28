@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 public class ArgumentMultimapTest {
 
+    // The prefixes used in this test differ from our application's standard conventions to verify that these methods
+    // function correctly with any provided prefix.
     private static final Prefix PREFIX_POSTALCODE = new Prefix("postal/");
     private static final Prefix PREFIX_UNITNUMBER = new Prefix("unit/");
 
@@ -16,7 +18,7 @@ public class ArgumentMultimapTest {
         argumentMultimap.put(PREFIX_POSTALCODE, "123456");
         argumentMultimap.put(PREFIX_UNITNUMBER, "10");
 
-        assertTrue(ArgumentMultimap.areOnlyPrefixesPresent(argumentMultimap, PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
+        assertTrue(argumentMultimap.areOnlyPrefixesPresent(PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
     }
 
     @Test
@@ -24,7 +26,7 @@ public class ArgumentMultimapTest {
         ArgumentMultimap argumentMultimap = new ArgumentMultimap();
         argumentMultimap.put(PREFIX_POSTALCODE, "123456");
 
-        assertFalse(ArgumentMultimap.areOnlyPrefixesPresent(argumentMultimap, PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
+        assertFalse(argumentMultimap.areOnlyPrefixesPresent(PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
     }
 
     @Test
@@ -34,13 +36,13 @@ public class ArgumentMultimapTest {
         argumentMultimap.put(PREFIX_UNITNUMBER, "10");
         argumentMultimap.put(new Prefix("extra/"), "some value");
 
-        assertFalse(ArgumentMultimap.areOnlyPrefixesPresent(argumentMultimap, PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
+        assertFalse(argumentMultimap.areOnlyPrefixesPresent(PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
     }
 
     @Test
     public void areOnlyPrefixesPresent_noPrefixesPresent_returnsFalse() {
         ArgumentMultimap argumentMultimap = new ArgumentMultimap();
 
-        assertFalse(ArgumentMultimap.areOnlyPrefixesPresent(argumentMultimap, PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
+        assertFalse(argumentMultimap.areOnlyPrefixesPresent(PREFIX_POSTALCODE, PREFIX_UNITNUMBER));
     }
 }

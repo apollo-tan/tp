@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -74,5 +77,35 @@ public class ArgumentMultimap {
         if (duplicatedPrefixes.length > 0) {
             throw new ParseException(Messages.getErrorMessageForDuplicatePrefixes(duplicatedPrefixes));
         }
+    }
+
+    /**
+     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
+     * {@code ArgumentMultimap}.
+     */
+    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
+
+    /**
+     * Returns true if only the specified prefixes are present in the given {@code ArgumentMultimap}.
+     * Ensures that no other prefixes are present.
+     */
+    public static boolean areOnlyPrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        // Get all existing prefixes in the argument multimap
+        List<Prefix> existingPrefixes = new ArrayList<>(argumentMultimap.argMultimap.keySet());
+
+        // Create a set of allowed prefixes for quick lookup
+        Set<Prefix> allowedPrefixes = new HashSet<>(Arrays.asList(prefixes));
+
+        // Check if any existing prefix is not in the allowed set
+        for (Prefix prefix : existingPrefixes) {
+            if (!allowedPrefixes.contains(prefix)) {
+                return false; // Found a prefix that is not allowed
+            }
+        }
+
+        // Check if all allowed prefixes are present
+        return arePrefixesPresent(argumentMultimap, prefixes);
     }
 }

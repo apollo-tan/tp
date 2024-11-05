@@ -35,6 +35,12 @@ public class ListCommandParser implements Parser<ListCommand> {
         logger.info("Parsing list command with arguments: " + args);
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_KEY);
+
+        // Check for duplicate prefixes
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_KEY);
+        argMultimap.verifyPrefixesPresent(PREFIX_KEY);
+        argMultimap.verifyOnlyPrefixesPresent(PREFIX_KEY);
+
         String keyArg = argMultimap.getValue(PREFIX_KEY).orElse("");
 
         if (keyArg.isEmpty()) {

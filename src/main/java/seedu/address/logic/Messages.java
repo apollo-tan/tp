@@ -22,7 +22,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "Multiple values specified for the following single-valued field(s): ";
+            "Multiple values specified for the following single-valued field(s): ";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -39,12 +39,40 @@ public class Messages {
     }
 
     /**
+     * Returns an error message indicating the missing prefixes.
+     */
+    public static String getErrorMessageForMissingPrefixes(Prefix... missingPrefixes) {
+        assert missingPrefixes.length > 0;
+
+        Set<String> missingFields =
+                Stream.of(missingPrefixes).map(Prefix::toString)
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return "The following required prefixes are missing or empty: " + String.join(", ", missingFields);
+    }
+
+    /**
+     * Returns an error message indicating the extra prefixes.
+     */
+    public static String getErrorMessageForExtraPrefixes(Prefix... extraPrefixes) {
+        assert extraPrefixes.length > 0;
+
+        Set<String> extraFields =
+                Stream.of(extraPrefixes).map(Prefix::toString)
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return "The following extra prefixes are not allowed: " + String.join(", ", extraFields);
+    }
+
+    /**
      * Formats the {@code client} for display to the user.
      */
     public static String format(Client client) {
         final StringBuilder builder = new StringBuilder();
         builder.append(client instanceof Buyer ? ClientTypes.BUYER.toString() + "; "
-                : ClientTypes.SELLER.toString() + "; ")
+                        : ClientTypes.SELLER.toString() + "; ")
                 .append(client.getName())
                 .append("; Phone: ")
                 .append(client.getPhone())

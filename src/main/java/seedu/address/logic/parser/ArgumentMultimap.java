@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.Messages;
@@ -70,6 +71,7 @@ public class ArgumentMultimap {
      * once among the arguments.
      */
     public void verifyNoDuplicatePrefixesFor(Prefix... prefixes) throws ParseException {
+        System.out.println(argMultimap.keySet());
         Prefix[] duplicatedPrefixes = Stream.of(prefixes).distinct()
                 .filter(prefix -> argMultimap.containsKey(prefix) && argMultimap.get(prefix).size() > 1)
                 .toArray(Prefix[]::new);
@@ -80,31 +82,46 @@ public class ArgumentMultimap {
     }
 
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in this {@code ArgumentMultimap}.
+     * Throws a {@code ParseException} if any of the prefixes given in {@code prefixes} are empty
+     * in this {@code ArgumentMultimap}.
      */
-    public boolean arePrefixesPresent(Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> getValue(prefix).isPresent());
+    public void verifyPrefixesPresent(Prefix... prefixes) throws ParseException {
+        System.out.println(argMultimap.keySet());
+        List<Prefix> missingPrefixes = Stream.of(prefixes)
+                .filter(prefix -> getValue(prefix).isEmpty())
+                .collect(Collectors.toList());
+
+        if (!missingPrefixes.isEmpty()) {
+            throw new ParseException(
+                    Messages.getErrorMessageForMissingPrefixes(missingPrefixes.toArray(new Prefix[0])));
+        }
     }
 
+
     /**
-     * Returns true if only the specified prefixes are present in this {@code ArgumentMultimap}.
-     * Ensures that no other prefixes are present.
+     * Throws a {@code ParseException} if prefixes not specified in {@code prefixes} are present
+     * or if any of the specified prefixes are missing.
      */
-    public boolean areOnlyPrefixesPresent(Prefix... prefixes) {
+    public void verifyOnlyPrefixesPresent(Prefix... prefixes) throws ParseException {
+        System.out.println(argMultimap.keySet());
         // Get all existing prefixes in the argument multimap
         List<Prefix> existingPrefixes = new ArrayList<>(argMultimap.keySet());
 
         // Create a set of allowed prefixes for quick lookup
         Set<Prefix> allowedPrefixes = new HashSet<>(Arrays.asList(prefixes));
 
-        // Check if any existing prefix is not in the allowed set
-        for (Prefix prefix : existingPrefixes) {
-            if (!allowedPrefixes.contains(prefix)) {
-                return false; // Found a prefix that is not allowed
-            }
+        // Check for extra prefixes
+        List<Prefix> extraPrefixes = existingPrefixes.stream()
+                .filter(prefix -> !allowedPrefixes.contains(prefix))
+                .collect(Collectors.toList());
+
+        if (!extraPrefixes.isEmpty()) {
+            throw new ParseException(
+                    Messages.getErrorMessageForExtraPrefixes(extraPrefixes.toArray(new Prefix[0])));
         }
 
-        // Check if all allowed prefixes are present
-        return arePrefixesPresent(prefixes);
+        // Check for missing prefixes
+        verifyPrefixesPresent(prefixes);
     }
+
 }
